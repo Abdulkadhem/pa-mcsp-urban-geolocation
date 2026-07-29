@@ -1,0 +1,13 @@
+numpy>=1.26
+pandas>=2.1
+pyarrow>=15
+pytest>=8
+torch>=2.4
+torchvision>=0.19
+transformers>=4.48,<6
+faiss-cpu>=1.9
+tqdm>=4.66
+pyproj>=3.7
+s2sphere>=0.2.5
+safetensors>=0.5
+huggingface-hub>=0.27

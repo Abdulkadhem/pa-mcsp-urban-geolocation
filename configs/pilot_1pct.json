@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "experiment_name": "osv5m_urban_pilot_1pct",
+  "dataset": {
+    "name": "osv5m",
+    "source_revision": null,
+    "official_train_count": 4894684,
+    "official_test_count": 210122,
+    "sample_fraction": 0.01,
+    "sample_seed": 20260724,
+    "sampling_unit": "sequence_id",
+    "development_fraction": 0.1,
+    "development_seed": 20260725,
+    "urban_source": "GHS-SMOD R2023A epoch 2020, 1 km, Mollweide",
+    "urban_classes": [21, 22, 23, 30],
+    "test_policy": "official test pilot is timing-only; no model selection"
+  },
+  "model": {
+    "backbone": "StreetCLIP ViT-L/14",
+    "image_size": 224,
+    "backbone_trainable": false,
+    "precision": "bf16_if_supported_else_fp16",
+    "candidate_representation": "train_only_s2_prototypes",
+    "posterior": "vmf_mixture",
+    "s2_min_level": 3,
+    "s2_max_level": 12,
+    "maximum_samples_per_leaf": 64,
+    "posterior_top_k": 8,
+    "geo_soft_radius_km": 500.0
+  },
+  "pilot": {
+    "epochs": 3,
+    "seeds": [20260724],
+    "batch_size": "auto",
+    "target_vram_margin_fraction": 0.15,
+    "checkpoint_every_minutes": 30,
+    "resume": true
+  },
+  "gates": {
+    "minimum_decode_rate": 0.995,
+    "maximum_exact_split_overlap": 0,
+    "maximum_sequence_split_overlap": 0,
+    "require_finite_loss": true,
+    "require_raw_prediction_for_every_query": true,
+    "minimum_free_disk_gb_for_1pct": 100
+  },
+  "outputs": {
+    "manifest": "artifacts/manifests/pilot_1pct.parquet",
+    "predictions": "artifacts/predictions/pilot_1pct.parquet",
+    "timing": "artifacts/timing/pilot_1pct.json",
+    "environment": "artifacts/environment/pilot_1pct.json",
+    "checkpoints": "artifacts/checkpoints/pilot_1pct"
+  }
+}

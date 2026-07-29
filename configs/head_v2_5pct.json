@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "experiment_name": "streetclip_head_v2_shard_5pct",
+  "development_split": "development",
+  "forbidden_evaluation_splits": ["official_test_pilot"],
+  "seeds": [20260724],
+  "partition": {
+    "s2_min_level": 3,
+    "s2_max_level": 12,
+    "maximum_samples_per_leaf": 64
+  },
+  "model": {
+    "hidden_dimension": 96,
+    "temperature": 0.07,
+    "top_k": 8,
+    "maximum_offset_radians": 0.12
+  },
+  "training": {
+    "epochs": 10,
+    "batch_size": 512,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "geo_scale_km": 50.0,
+    "near_radius_km": 150.0,
+    "mixture_weight": 0.03,
+    "offset_weight": 1.0,
+    "gate_weight": 0.05,
+    "anchor_weight": 0.002,
+    "gradient_clip_norm": 5.0
+  },
+  "variants": [
+    {
+      "name": "full_v2",
+      "enable_offsets": true,
+      "density_weight": 0.0
+    }
+  ],
+  "gate": {
+    "accuracy_margin_over_retrieval": 0.01,
+    "maximum_median_ratio_to_prototype": 0.97,
+    "require_geoscore_at_least_prototype": true,
+    "require_log1p_error_bootstrap_ci_high_below_zero": true,
+    "bootstrap_resamples": 2000
+  }
+}
