@@ -3,9 +3,9 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "urban-s2-posterior"
-version = "0.1.0"
-description = "Reproducible pilot infrastructure for worldwide urban image geolocation."
+name = "pa-mcsp-urban-geolocation"
+version = "0.2.0"
+description = "Reproducible implementation and locked release manifest for PA-MCSP urban image geolocation."
 requires-python = ">=3.10"
 dependencies = [
   "numpy>=1.26",

@@ -37,7 +37,9 @@ pytest
 
 The public StreetCLIP backbone is downloaded by the extraction scripts from
 its Hugging Face model identifier. Dataset files and feature caches are not
-bundled; pass their local paths explicitly to the scripts.
+bundled; pass their local paths explicitly to the scripts. The exact primary
+paper run is documented in `docs/reproducibility.md` and
+`configs/pa_mcsp_paper_locked.json`.
 
 ## Checkpoints
 
@@ -54,9 +56,11 @@ GitHub repository.
 | `pa_mcsp_binary_gate.pt` | binary candidate-selection gate |
 | `pa_mcsp_ood_gate.pt` | out-of-distribution gate |
 
-The checkpoints are loaded with `torch.load(..., map_location=...)`. Do not
-commit raw images, EXIF metadata, private credentials, or generated result
-directories.
+The primary paper result is the learned-free patch-token late-fusion pipeline;
+it does not load a trainable neural checkpoint. The `.pt` files in this release
+are auxiliary checkpoints from exploratory variants and are not used to produce
+the headline Table 3 result. Do not commit raw images, EXIF metadata, private
+credentials, or generated result directories.
 
 ## Main entry points
 
@@ -69,6 +73,15 @@ python scripts/validate_pa_mcsp_outputs.py --help
 
 All paths are supplied as command-line arguments so the code can be used with
 local storage, a mounted cloud volume, or a Slurm/Vast.ai workspace.
+
+## Reproducibility scope
+
+The paper reports a locked diagnostic snapshot rather than a confirmatory
+holdout claim. The public repository contains the code and auxiliary weights;
+the OSV-5M images, manifests, feature caches, and paper-specific prediction
+arrays remain external because of their size and licensing constraints. See
+`docs/reproducibility.md` for the exact method configuration, metric hashes,
+and the required external inputs.
 
 ## Publish to GitHub
 

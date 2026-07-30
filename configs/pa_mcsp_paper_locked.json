@@ -1,0 +1,23 @@
+{
+  "run_id": "patch_token_full_20260726",
+  "method": "PA-MCSP patch-token late fusion",
+  "backbone": "geolocal/StreetCLIP",
+  "backbone_frozen": true,
+  "trainable_checkpoint": null,
+  "candidate_sources": ["adaptive_s2_prototype", "image_retrieval"],
+  "k_per_source": 16,
+  "patch_pooling": "four quadrant means over ViT patch tokens",
+  "score_normalization": "row-wise z-score",
+  "zscore_epsilon": 1e-6,
+  "alpha": 0.75,
+  "alpha_by_outer_fold": [0.75, 0.75, 0.5, 0.75, 0.75],
+  "official_queries": 38190,
+  "official_metrics": {
+    "accuracy_25km": 0.2023042681330191,
+    "accuracy_200km": 0.38279654359780046,
+    "median_error_km": 432.01712656528616,
+    "mean_error_km": 1665.5225911179712,
+    "geoscore": 0.6388536741689744
+  },
+  "status": "locked diagnostic snapshot; not a confirmatory holdout"
+}
