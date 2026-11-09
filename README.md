@@ -1,17 +1,15 @@
 # PA-MCSP Urban Geolocation Toolkit
 
-Reference implementation of the **PA-MCSP (Prototype-Adaptive Multi-Cue Spatial Prior)** urban image geolocation method.
+Reference implementation of the **PA-MCSP (Patch-Aware Multi-Cue Spatial Proposal)** urban image geolocation method.
 
 Clean code-and-weights release for the urban image-geolocation system. This
 repository intentionally excludes the manuscript, figures, experimental logs,
 large image/feature datasets, cloud snapshots, and paper-specific evidence.
 
-## Authors
+## Author
 
 - Abdulkadhem A. Abdulkadhem — Al-Mustaqbal University
   - ORCID: https://orcid.org/0000-0002-4533-7083
-- Zain I. Al-Tamimi — Al-Mustaqbal University
-  - ORCID: https://orcid.org/0009-0005-0848-6855
 
 ## Repository layout
 
@@ -56,7 +54,7 @@ GitHub repository.
 | `pa_mcsp_binary_gate.pt` | binary candidate-selection gate |
 | `pa_mcsp_ood_gate.pt` | out-of-distribution gate |
 
-The primary paper result is the learned-free patch-token late-fusion pipeline;
+The primary paper result is the training-free patch-token late-fusion pipeline;
 it does not load a trainable neural checkpoint. The `.pt` files in this release
 are auxiliary checkpoints from exploratory variants and are not used to produce
 the headline Table 3 result. Do not commit raw images, EXIF metadata, private
@@ -82,17 +80,3 @@ the OSV-5M images, manifests, feature caches, and paper-specific prediction
 arrays remain external because of their size and licensing constraints. See
 `docs/reproducibility.md` for the exact method configuration, metric hashes,
 and the required external inputs.
-
-## Publish to GitHub
-
-From this directory:
-
-```bash
-git init -b main
-git add .
-git commit -m "Initial code and checkpoint release"
-git remote add origin https://github.com/<account>/<repository>.git
-git push -u origin main
-```
-
-If checkpoint files are retained, enable Git LFS before committing them.
