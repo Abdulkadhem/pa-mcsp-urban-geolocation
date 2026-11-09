@@ -35,6 +35,24 @@ def metrics(err: np.ndarray) -> dict:
     }
 
 
+def lookup_rows(desc_rows: np.ndarray, rows: np.ndarray, what: str) -> np.ndarray:
+    """Exact positions of ``rows`` in the sorted ``desc_rows``.
+
+    ``np.searchsorted`` alone returns an insertion point for absent rows, which
+    would silently read the descriptor of a different image. O(n log m).
+    """
+    pos = np.searchsorted(desc_rows, rows)
+    clipped = np.minimum(pos, len(desc_rows) - 1)
+    present = desc_rows[clipped] == rows
+    if not present.all():
+        missing = np.unique(np.asarray(rows)[~present])
+        raise KeyError(
+            f"{missing.size} {what} feature rows are absent from the descriptor "
+            f"cache (first: {missing[:5].tolist()}); encode them before scoring."
+        )
+    return clipped
+
+
 def score_rows(rows, cache, folds, desc, desc_rows, k, batch, device):
     pidx = cache["prototype_indices"][:,:k].astype(np.int64)
     ridx = cache["retrieval_indices"][:,:k].astype(np.int64)
@@ -58,8 +76,8 @@ def score_rows(rows, cache, folds, desc, desc_rows, k, batch, device):
       for start in range(0, len(rows), batch):
         rr = rows[start:start+batch]
         cand = np.concatenate((reps[pidx[rr]], grows[ridx[rr]]), axis=1)
-        qpos = np.searchsorted(desc_rows, qrows[rr])
-        cpos = np.searchsorted(desc_rows, cand)
+        qpos = lookup_rows(desc_rows, qrows[rr], "query")
+        cpos = lookup_rows(desc_rows, cand, "candidate")
         qv = torch.from_numpy(np.asarray(desc[qpos])).to(device=device, non_blocking=True)
         cv = torch.from_numpy(np.asarray(desc[cpos])).to(device=device, non_blocking=True)
         with torch.autocast(device_type="cuda", dtype=torch.float16):
