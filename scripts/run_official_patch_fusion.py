@@ -55,7 +55,7 @@ def main():
             if s % (args.extract_batch*20)==0: print(f'extracted={min(s+len(items),len(items))}/{len(items)}',flush=True)
     pool.shutdown(wait=True)
     # Score candidates in GPU batches; existing descriptors are mmap'd, extras are in memory.
-    patch=np.empty((len(test_idx),2*args.k),np.float32); qpos=np.searchsorted(drows,np.arange(len(test_idx)))
+    patch=np.empty((len(test_idx),2*args.k),np.float32)
     # qdesc is separate; candidate lookup uses exact feature-row IDs.
     def get_desc(row):
         j=np.searchsorted(drows,row)
@@ -67,6 +67,6 @@ def main():
             if s % (args.batch*20)==0: print(f'scored={e}/{len(test_idx)}',flush=True)
     def z(a): return (a-a.mean(1,keepdims=True))/np.maximum(a.std(1,keepdims=True),1e-6)
     rz,pz=z(raw),z(patch); pred=np.argmax(rz+args.alpha*pz,1); err=geo_km(truth,coords); fused=err[np.arange(len(err)),pred]
-    payload={'method':'official_patch_token_late_fusion','official_test_evaluated':True,'queries':int(len(test_idx)),'k':int(args.k),'alpha_fixed_from_development':float(args.alpha),'missing_gallery_rows':int(len(missing)),'elapsed_seconds':float(time.perf_counter()-t0),'prototype':summary(err[:,:args.k].min(1)),'retrieval':summary(err[:,args.k:].min(1)),'union_anchor':summary(err[np.arange(len(err)),np.argmax(rz,1)]),'patch_fusion':summary(fused),'predictions_path':str(args.output.with_suffix('.predictions.parquet'))}
+    payload={'method':'official_patch_token_late_fusion','official_test_evaluated':True,'queries':int(len(test_idx)),'k':int(args.k),'alpha_fixed_from_development':float(args.alpha),'missing_gallery_rows':int(len(missing)),'elapsed_seconds':float(time.perf_counter()-t0),'prototype_oracle_best_of_k':summary(err[:,:args.k].min(1)),'retrieval_oracle_best_of_k':summary(err[:,args.k:].min(1)),'prototype_top1':summary(err[:,0]),'retrieval_top1':summary(err[:,args.k]),'union_anchor':summary(err[np.arange(len(err)),np.argmax(rz,1)]),'patch_fusion':summary(fused),'predictions_path':str(args.output.with_suffix('.predictions.parquet'))}
     args.output.parent.mkdir(parents=True,exist_ok=True); args.output.write_text(json.dumps(payload,indent=2),encoding='utf-8'); pd.DataFrame({'id':test_idx.id.to_numpy(),'distance_km':fused,'pred_latitude':coords[np.arange(len(coords)),pred,0],'pred_longitude':coords[np.arange(len(coords)),pred,1]}).to_parquet(args.output.with_suffix('.predictions.parquet'),index=False); print(json.dumps(payload,indent=2),flush=True)
 if __name__=='__main__': main()
